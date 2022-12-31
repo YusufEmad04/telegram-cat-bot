@@ -1,6 +1,9 @@
 from flask import Flask, request
 import json
-from Controller import BucketController, TelegramController
+from controllers.telegram import TelegramController
+from controllers.bucket import BucketController
+from controllers.firestore import FirestoreController
+from user import User
 
 app = Flask(__name__)
 
@@ -22,11 +25,34 @@ def get_details_from_event_api(event):
 def webhook():
     if request.method == 'POST':
         id, first_name = get_details_from_event_api(request.json)
-        controller = TelegramController(id, first_name)
+
+        user = User(str(id), str(first_name))
+
+        controller = TelegramController(user)
         controller.greet()
 
         controller.send_photo(BucketController().get_random_object_url())
+
+        FirestoreController(cred_file="cred.json").add_user(user)
+
     return 'OK'
+
+def lambda_handler(event, context):
+    id, first_name = get_details_from_event_lambda(event)
+
+    user = User(str(id), str(first_name))
+
+    controller = TelegramController(user)
+    controller.greet()
+
+    controller.send_photo(BucketController().get_random_object_url())
+
+    FirestoreController(cred_file="cred.json").add_user(user)
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

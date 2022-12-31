@@ -1,7 +1,5 @@
 import boto3
-import requests
 import random
-
 
 class BucketController:
     def __init__(self):
@@ -40,21 +38,3 @@ class BucketController:
         return url
 
 
-class TelegramController:
-    def __init__(self, id, first_name):
-        self.id = id
-        self.first_name = first_name
-        self.url = "https://api.telegram.org/bot5845155383:AAFj-63Q2SvbI_LW6QeeUpjAhVIhlsji8xs/"
-
-    def send_message(self, message):
-        requests.get(self.url + "sendMessage?chat_id=" + str(self.id) + "&text=" + message)
-
-    def send_photo(self, photo_url):
-        json = {
-            "chat_id": self.id,
-            "photo": photo_url
-        }
-        requests.post(self.url + "sendPhoto", json=json)
-
-    def greet(self):
-        self.send_message("MEOW " + self.first_name + " 😺!")
