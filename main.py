@@ -12,14 +12,16 @@ from user import User
 def get_details_from_event_lambda(event):
     id = json.loads(event['body'])["message"]["from"]["id"]
     first_name = json.loads(event['body'])["message"]["from"]["first_name"]
+    text = json.loads(event['body'])["message"]["text"]
 
-    return id, first_name
+    return User(id, first_name, text)
 
 def get_details_from_event_api(event):
     id = event["message"]["from"]["id"]
     first_name = event["message"]["from"]["first_name"]
+    text = event["message"]["text"]
 
-    return id, first_name
+    return User(id, first_name, text)
 
 
 # @app.route('/webhook', methods=['POST'])
@@ -39,14 +41,10 @@ def get_details_from_event_api(event):
 #     return 'OK'
 
 def lambda_handler(event, context):
-    id, first_name = get_details_from_event_lambda(event)
 
-    user = User(id, str(first_name))
+    user = get_details_from_event_lambda(event)
 
     controller = TelegramController(user)
-    controller.greet()
-
-    controller.send_media(BucketController().get_random_object_url())
 
     DynamoDB('users').add_user(user)
 

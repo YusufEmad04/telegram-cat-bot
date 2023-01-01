@@ -12,7 +12,7 @@ class BucketController:
 
     def get_objects_by_tag(self, tag_key, value):
         final_objects = []
-        response = self.s3.list_objects_v2(Bucket=self.bucket)
+        response = self.s3.list_objects_v2(Bucket=self.bucket, Prefix='cats/')
         objects = response['Contents']
         for obj in objects:
             key = obj['Key']
@@ -30,11 +30,15 @@ class BucketController:
         self.s3.put_object_tagging(Bucket=self.bucket, Key=key, Tagging={'TagSet': [{'Key': tag_key, 'Value': value}]})
 
     def get_random_object_url(self):
-        response = self.s3.list_objects_v2(Bucket=self.bucket)
+        response = self.s3.list_objects_v2(Bucket=self.bucket, Prefix='cats/')
         objects = response['Contents']
         random_object = random.choice(objects)
         key = random_object['Key']
         url = self.get_url_of_object(key)
         return url, key
 
+
+    def get_file_bytes(self, key):
+        response = self.s3.get_object(Bucket=self.bucket, Key=key)
+        return response['Body'].read()
 
