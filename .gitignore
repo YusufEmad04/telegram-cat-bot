@@ -1,6 +1,7 @@
 .idea
-__pycache__
+.idea/
+__pycache__/
 bucket_policy.txt
 controllers/cred.json
 test.py
-deployment
+deployment/

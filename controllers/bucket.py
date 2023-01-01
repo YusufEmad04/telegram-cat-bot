@@ -35,6 +35,6 @@ class BucketController:
         random_object = random.choice(objects)
         key = random_object['Key']
         url = self.get_url_of_object(key)
-        return url
+        return url, key
 
 
