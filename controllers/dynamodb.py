@@ -36,6 +36,7 @@ class DynamoDB:
         response = self.table.scan()
         print(response['Items'])
         print(response)
+        return response['Items']
 
     def delete_all_users(self):
         response = self.table.scan()

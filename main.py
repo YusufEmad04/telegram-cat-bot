@@ -10,9 +10,12 @@ from user import User
 
 
 def get_details_from_event_lambda(event):
-    id = json.loads(event['body'])["message"]["from"]["id"]
-    first_name = json.loads(event['body'])["message"]["from"]["first_name"]
-    text = json.loads(event['body'])["message"]["text"]
+    try:
+        id = json.loads(event['body'])["message"]["from"]["id"]
+        first_name = json.loads(event['body'])["message"]["from"]["first_name"]
+        text = json.loads(event['body'])["message"]["text"]
+    except:
+        return -1
 
     return User(id, first_name, text)
 
@@ -43,6 +46,11 @@ def get_details_from_event_api(event):
 def lambda_handler(event, context):
 
     user = get_details_from_event_lambda(event)
+    if user == -1:
+        return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+        }
 
     controller = TelegramController(user)
 

@@ -1,6 +1,7 @@
 import requests
 
 from controllers.bucket import BucketController
+import random
 
 
 class TelegramController:
@@ -45,6 +46,11 @@ class TelegramController:
         if message == "/meow":
             # self.send_voice(BucketController().get_url_of_object("meows/meow2.ogg"))
             self.send_voice(BucketController().get_file_bytes("meows/meow2.ogg"))
+        elif message == "/sing":
+            songs = ["meows/meowsong.ogg", "meows/meowsong1.ogg"]
+            # select a random song
+            song = random.choice(songs)
+            self.send_voice(BucketController().get_file_bytes(song))
         else:
             self.greet()
             self.send_media(BucketController().get_random_object_url())
